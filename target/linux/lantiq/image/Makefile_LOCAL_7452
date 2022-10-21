@@ -49,38 +49,6 @@ define Build/fullimage
 	rm $@.tmp
 endef
 
-define Build/rs353-cev
-  rm -f $(KDIR)/boss.bin.gz
-  # Add CEV header (magic). The name "boss.bin" have to be in the gzip header.
-  echo -ne "\x10\x00\x00\x02\x00\x00\x00\x00\x43\x45\x56\x00\x00\x00\x00\x00" > $(KDIR)/boss.bin
-  # Append data
-  cat $@ >> $(KDIR)/boss.bin
-  # gzip the file
-  gzip $(KDIR)/boss.bin
-  # Add a fake BOSS header to align image to flash sectors.
-  dd if=/dev/zero of=$(KDIR)/boss.1 bs=52 count=1
-  cat $(KDIR)/boss.bin.gz >> $(KDIR)/boss.1
-  # Align with flash sector size minus boss header size
-  dd if=$(KDIR)/boss.1 of=$@ bs=131072 conv=sync
-endef
-
-define Build/rs353-boss-header
-  mkbossimg rs353 $@
-  mv bossImage.img $@
-endef
-
-define Build/lzma-loader
-  rm -rf $(KDIR)/lzma-loader
-  $(NO_TRACE_MAKE) -C lzma-loader \
-          KDIR=$(KDIR) \
-          LZMA_TEXT_START=0x80a00000 \
-          LOADADDR=0x80002000 \
-          PLATFORM="lantiq" \
-          LOADER_DATA="$@" \
-          compile
-  cp $(KDIR)/lzma-loader/loader.bin $@
-endef
-
 define Build/loader-common
 	rm -rf $@.src
 	$(MAKE) -C lzma-loader \
