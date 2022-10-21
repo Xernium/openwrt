@@ -49,6 +49,9 @@ define Build/fullimage
 	rm $@.tmp
 endef
 
+<<<<<<< HEAD
+define Build/loader-common
+=======
 define Build/rs353-cev
   rm -f $(KDIR)/boss.bin.gz
   # Add CEV header (magic). The name "boss.bin" have to be in the gzip header.
@@ -81,7 +84,8 @@ define Build/lzma-loader
   cp $(KDIR)/lzma-loader/loader.bin $@
 endef
 
-define Build/loader-common
+define Build/loader-okli-compile
+>>>>>>> 3f1f252520 (RS353: Add support to Makefile)
 	rm -rf $@.src
 	$(MAKE) -C lzma-loader \
 		PKG_BUILD_DIR="$@.src" \
