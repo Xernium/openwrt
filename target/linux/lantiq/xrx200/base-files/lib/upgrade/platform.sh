@@ -27,8 +27,16 @@ platform_do_upgrade() {
 	zyxel,p-2812hnu-f3)
 		nand_do_upgrade $1
 		;;
+	bintec,rs353)
+		default_do_upgrade "$1"
+		do_fixboss
+		;;
 	*)
 		default_do_upgrade "$1"
 		;;
 	esac
+}
+
+do_fixboss() {
+	mtd fixboss firmware
 }
